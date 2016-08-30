@@ -245,19 +245,12 @@ module.exports = function (jsonuri) {
    * normalizePath
    */
   describe('jsonuri.normalizePath', () => {
-    const obj = {
-      a: 2,
-      b: {
-        b1: {
-          b11: 311,
-          b12: 312
-        },
-        b2: 32
-      },
-      list: [0, 1, 2, 3, 4, 5, 6, 7, 8],
-      NULL: null
-    }
-    
+    const n = jsonuri.normalizePath
+    expect(n('a/b/c')).toEqual('/a/b/c/')
+    expect(n('a/b/../')).toEqual('/a/')
+    expect(n('a/./')).toEqual('/a/')
+    expect(n(['a/b', 'c'])).toEqual('/a/b/c/')
+    expect(n(['a/b', 'c'], 'd', 'e', '../')).toEqual('/a/b/c/d/')
   })
 
   describe('bad args', () => {
