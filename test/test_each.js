@@ -231,9 +231,22 @@ module.exports = function (jsonuri) {
       expect(arr).toEqual([0, 'hello kitty', 1, 2, 3])
     })
 
-    // TODO 跨界
+    it('out of range', () => {
+      jsonuri.insert(arr, '/-100/', 'hello kitty')
+      expect(arr).toEqual(['hello kitty', 0, 1, 2, 3])
+    })
+    it('out of range', () => {
+      jsonuri.insert(arr, '/999/', 'hello kitty')
+      expect(arr).toEqual([0, 1, 2, 3, 'hello kitty'])
+    })
   })
 
+  /**
+   * normalizePath
+   */
+  describe('jsonuri.normalizePath', () => {
+
+  })
 
   describe('bad args', () => {
     //it('{}', () => {
