@@ -7,7 +7,7 @@ module.exports = function (jsonuri) {
    * jsonuri.get
    */
   describe('get', () => {
-    let obj = {
+    const obj = {
       a: 2,
       b: {
         b1: {
@@ -245,7 +245,19 @@ module.exports = function (jsonuri) {
    * normalizePath
    */
   describe('jsonuri.normalizePath', () => {
-
+    const obj = {
+      a: 2,
+      b: {
+        b1: {
+          b11: 311,
+          b12: 312
+        },
+        b2: 32
+      },
+      list: [0, 1, 2, 3, 4, 5, 6, 7, 8],
+      NULL: null
+    }
+    
   })
 
   describe('bad args', () => {
