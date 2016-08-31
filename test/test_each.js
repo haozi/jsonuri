@@ -81,11 +81,7 @@ module.exports = function (jsonuri) {
 
     it('set array error path', () => { // bad
       jsonuri.set(obj, '/a/b/-1', 10)
-      expect(JSON.parse(JSON.stringify(obj))).toEqual({
-        a: {
-          b: []
-        }
-      })
+      expect(JSON.parse(JSON.stringify(obj))).toEqual({a: {b: []}})
     })
   })
 
@@ -139,15 +135,15 @@ module.exports = function (jsonuri) {
       expect(arr).toEqual([0, 3, 2, 1, 4, 5, 6])
     })
 
-    // it('when index out of range', () => {
-    //   jsonuri.swap(arr, '1', '999')
-    //   expect(arr).toEqual([0, 1, 2, 3, 4, 5, 6])
-    // })
+    it('when index out of range', () => {
+      jsonuri.swap(arr, '1', '999')
+      expect(arr).toEqual([0, 1, 2, 3, 4, 5, 6])
+    })
 
-    // it('when index out of range', () => {
-    //   jsonuri.swap(arr, '/-1', '/3')
-    //   expect(arr).toEqual([0, 1, 2, 3, 4, 5, 6])
-    // })
+    it('when index out of range', () => {
+      jsonuri.swap(arr, '/-1', '/3')
+      expect(arr).toEqual([0, 1, 2, 3, 4, 5, 6])
+    })
   })
 
   /**
@@ -242,7 +238,7 @@ module.exports = function (jsonuri) {
   })
 
   /**
-   * normalizePath
+   * jsonuri.normalizePath
    */
   describe('jsonuri.normalizePath', () => {
     const n = jsonuri.normalizePath
@@ -251,6 +247,32 @@ module.exports = function (jsonuri) {
     expect(n('a/./')).toEqual('/a/')
     expect(n(['a/b', 'c'])).toEqual('/a/b/c/')
     expect(n(['a/b', 'c'], 'd', 'e', '../')).toEqual('/a/b/c/d/')
+  })
+
+  /**
+   * jsonuri.walk
+   */
+  describe('jsonuri.walk', () => {
+    const w = jsonuri.walk
+    let obj, emp
+    beforeEach(() => {
+      obj = {
+        a: 2,
+        b: {
+          b1: {
+            b11: 311,
+            b12: 312
+          },
+          b2: 32
+        },
+        list: [0, 1, 2, 3, 4, 5, 6, 7, 8],
+        NULL: null
+      }
+      emp = {}
+    })
+    w(emp, (val, key, parent, more) => {
+      console.log(val)
+    })
   })
 
   describe('bad args', () => {
