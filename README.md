@@ -4,39 +4,43 @@
 
 `Use URI path to get or set data.`
 
-![show](https://img.alicdn.com/tfs/TB12AVCKVXXXXcRXVXXXXXXXXXX-640-121.png)
 
+## Use
 
-## Install
-
-```
+```shell
 $ npm install jsonuri --save
 ```
 
-### Example Data:
+```javascript
+import * as ju from 'jsonuri'
+// or
+import { get, set, ... } from 'jsonuri' // recommended practice, friendly to tree-shaking
 ```
+
+### Example Data:
+```json
 {
-    "menu": {
-        "id": 123,
-        "list": [0,1,2,3,4],
-        "popup": {
-            "menuitem": [
-                {
-                    "value": "New",
-                    "onclick": "CreateNewDoc()"
-                },
-                {
-                    "value": "Open",
-                    "onclick": "OpenDoc()"
-                },
-                {
-                    "value": "Close",
-                    "onclick": "CloseDoc()"
-                }
-            ]
+  "menu": {
+    "id": 123,
+    "list": [0, 1, 2, 3, 4],
+    "popup": {
+      "menuitem": [{
+          "value": "New",
+          "onclick": "CreateNewDoc()"
+        },
+        {
+          "value": "Open",
+          "onclick": "OpenDoc()"
+        },
+        {
+          "value": "Close",
+          "onclick": "CloseDoc()"
         }
+      ]
     }
+  }
 }
+
 ```
 
 ## Methods:
@@ -47,15 +51,15 @@ Get the value of the specified data for the path.
 
 **Example:**
 
-```
-get(data, '/menu/id/');
-//123
+```javascript
+ju.get(data, '/menu/id/')
+// return 123
 
-get(data, '/menu/popup/menuitem/0/value/');
-//"New"
+ju.get(data, '/menu/popup/menuitem/0/value/')
+// return 'New'
 
-get(data, '/menu/popup/menuitem/0/value/../');
-//{value: "New", onclick: "CreateNewDoc()"}
+ju.get(data, '/menu/popup/menuitem/0/value/../')
+// {value: "New", onclick: "CreateNewDoc()"}
 
 ```
 
@@ -64,9 +68,9 @@ Set the value of the specified data for the path.
 
 **Example:**
 
-```
-set(data, '/menu/id/',789);
-get(data, '/menu/id/');
+```javascript
+ju.set(data, '/menu/id/', 789)
+ju.get(data, '/menu/id/')
 //789
 
 ```
@@ -76,10 +80,9 @@ Remove the value of the specified data for the path.
 
 **Example:**
 
-```
-rm(data, '/menu/id/');
-get(data, '/menu/id/');
-//undefined
+```javascript
+ju.rm(data, '/menu/id/')
+ju.get(data, '/menu/id/') // undefined
 ```
 
 
@@ -88,16 +91,14 @@ Data A moved to target B before or after.
 
 **Example:**
 
-```
-mv(data, '/menu/list/0', '/menu/list/3');
-get(data, '/menu/list/');
-//[1,2,3,0,4]
+```javascript
+ju.mv(data, '/menu/list/0', '/menu/list/3')
+ju.get(data, '/menu/list/') // [1, 2, 3, 0, 4]
 
 
-set(data, '/menu/list/',[0,1,2,3,4]);
-mv(data, '/menu/list/0', '/menu/list/3', 'before');
-get(data, '/menu/list/');
-//[1,2,0,3,4]
+ju.set(data, '/menu/list/',[0,1,2,3,4])
+ju.mv(data, '/menu/list/0', '/menu/list/3', 'before')
+ju.get(data, '/menu/list/') // [1, 2, 0, 3, 4]
 
 ```
 
@@ -106,14 +107,12 @@ Data swap in an array.
 
 **Example:**
 
-```
-swap(data, '/menu/list/0', '/menu/list/4');
-get(data, '/menu/list/');
-//[4,1,2,3,0]
+```javascript
+ju.swap(data, '/menu/list/0', '/menu/list/4')
+ju.get(data, '/menu/list/') // [4, 1, 2, 3, 0]
 
-swap(data, '/menu/list/0', '/menu/list/4');
-get(data, '/menu/list/');
-//[4,1,2,3,0]
+ju.swap(data, '/menu/list/0', '/menu/list/4')
+ju.get(data, '/menu/list/') // [4, 1, 2, 3, 0]
 
 ```
 
@@ -124,9 +123,8 @@ Insert data into an `array` that is described in the path.
 
 **Example:**
 
-```
-insert(data, '/menu/list/0', 9999, 'before');
-//[9999,0,1,2,3,4]
+```javascript
+ju.insert(data, '/menu/list/0', 9999, 'before') // [9999, 0, 1, 2, 3, 4]
 
 ```
 
@@ -143,25 +141,38 @@ Traverse each data of each node and value.
 
 **Example:**
 
-```
-walk({a:{a1:'x'}}, function(obj, key, raw, path){
-  console.log(obj, key, raw, path)
+```javascript
+ju.walk({a:{a1:'x'}}, (value, key, parent, { path }) => {
+  console.log(value, key, parent, path)
 })
 
 // { a1: 'x' } 'a' { a: { a1: 'x' } } '/a/'
-// x a1 { a1: 'x' } /a/a1/
+// x a1 { a1: 'x' } '/a/a1/'
 ```
 
 ### normalizePath(path1, path2, ...)
 
 **Example:**
 
-```
-normalizePath('a', 'b')  
-// /a/b/
+```javascript
+ju.normalizePath('a', 'b') // /a/b/
 
-normalizePath(['a', 'b', '../'], 'c')
-// /a/c/
+ju.normalizePath(['a', 'b', '../'], 'c') // /a/c/
+
+
+```
+
+### isCircular(obj)
+
+**Example:**
+
+```javascript
+ju.isCircular({}) // return false
+ju.isCircular(window) // return true
+
+var a = {}
+ju.set(a, '/b/c/d/e/f/g', a)
+ju.isCircular(a) // return true
 
 
 ```

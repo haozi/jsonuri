@@ -33,6 +33,13 @@ rollup.rollup({
   ]
 })
   .then(function (bundle) {
+    write('dist/jsonuri.es.js', bundle.generate({
+      format: 'es6',
+      banner: banner
+    }).code)
+    return bundle
+  })
+  .then(function (bundle) {
     return write('dist/jsonuri.common.js', bundle.generate({
       format: 'cjs',
       banner: banner
@@ -101,6 +108,7 @@ rollup.rollup({
   .catch(logError)
 
 htmlMin('./demo/index.html', './dist/index.html');
+write('dist/CNAME', 'jsonuri.js.org')
 
 function write(dest, code) {
   return new Promise(function (resolve, reject) {
